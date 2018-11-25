@@ -3,8 +3,11 @@ function App(global) {
 
 // Constructor
 const dom = {
-  playPurpleEl : document.querySelector('.play[data-line="purple"]'),
-  playWrapper : document.getElementById('playWrapper')
+  playPurple : document.querySelector('.play[data-line="purple"]'),
+  playBlue : document.querySelector('.play[data-line="blue"]'),
+  playOrange : document.querySelector('.play[data-line="orange"]'),
+  playYellow : document.querySelector('.play[data-line="yellow"]'),
+  playPauseIcon : document.querySelector('.play[data-line="purple"] .playButton')
 };
 const audio = new (global.AudioContext || global.webkitAudioContext);
 var appBegun = false;
@@ -15,9 +18,27 @@ var playing = {
   yellow : false
 };
 
-dom.playPurpleEl.addEventListener(
+dom.playPurple.addEventListener(
   'click',
   playPause,
+  false
+);
+
+dom.playBlue.addEventListener(
+  'click',
+  alert.bind(this, "Coming soon!"),
+  false
+);
+
+dom.playOrange.addEventListener(
+  'click',
+  alert.bind(this, "Coming soon!"),
+  false
+);
+
+dom.playYellow.addEventListener(
+  'click',
+  alert.bind(this, "Coming soon!"),
   false
 );
 
@@ -26,8 +47,8 @@ function playPause(e) {
     appBegun && Object.values(playing).some((val) => val)
     ?
     (
-      (dom.playPurpleEl.innerHTML = "▶")
-      &&
+      dom.playPauseIcon.classList.remove("paused")
+      ||
       (
         playing[
         global.Queensbound.pause(
@@ -45,8 +66,8 @@ function playPause(e) {
       (
         (playing.purple = true)
         &&
-        (dom.playPurpleEl.innerHTML = "&#x23f8;")
-        &&
+        dom.playPauseIcon.classList.add("paused")
+        ||
         Queensbound.play(e.target.dataset.line)
       )
       :
@@ -55,8 +76,8 @@ function playPause(e) {
         &&
         (playing.purple = true)
         &&
-        (dom.playPurpleEl.innerHTML = "&#x23f8;")
-        &&
+        dom.playPauseIcon.classList.add("paused")
+        ||
         audio.resume()
         .then(() =>
           global.Queensbound = new QPlayer(global, new Audio())

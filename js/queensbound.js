@@ -7,7 +7,9 @@ var closestStationToUser = {
   value : null,
   newValue : null
 };
+var pausedEarly = false;
 const degreeToMilesMultiplier = 69;
+const appLoadedAt = Date.now();
 const dom = {
   labelsEl : document.getElementById("labels"),
   userEl : document.getElementById("user"),
@@ -16,35 +18,65 @@ const dom = {
   stationEl : document.getElementById("closestStation"),
   poemEl : document.getElementById("poem"),
   authorEl : document.getElementById("author"),
-  dataEls : document.querySelectorAll(".data")
+  dataEls : document.querySelectorAll(".data"),
+  loaderEl : document.getElementById("loader")
 };
 
-checkOverflow();
-loadLocation();
+init();
+
+function init() {
+  return (
+    show(dom.loaderEl)
+    &&
+    checkOverflow()
+    &&
+    loadLocation()
+  );
+}
+
+function show(el) {
+  return (
+    el.classList.remove("hidden")
+    ||
+    el.classList
+  );
+}
+
+function hide(el) {
+  return (
+    el.classList.add("hidden")
+    ||
+    el.classList
+  );
+}
 
 function checkOverflow() {
-  dom.dataEls.forEach((el) =>
-    (new MutationObserver((mutations) =>
-      mutations.forEach((mutation) =>
-        (
-          mutation.type === "childList"
-          &&
-          mutation.target.nextElementSibling.clientWidth
-          >
-          mutation.target.clientWidth
-        )
-        &&
-        (
-          el.addEventListener(
-            "transitionend",
-            move.bind(el, el.clientWidth - el.nextElementSibling.clientWidth),
-            false
+  return (
+    dom.dataEls.forEach((el) =>
+      (new MutationObserver((mutations) =>
+        mutations.forEach((mutation) =>
+          (
+            mutation.type === "childList"
+            &&
+            mutation.target.nextElementSibling.clientWidth
+            >
+            mutation.target.clientWidth
           )
-          ||
-          move.call(el, el.clientWidth - el.nextElementSibling.clientWidth)
+          &&
+          (
+            el.addEventListener(
+              "transitionend",
+              move.bind(el, el.clientWidth - el.nextElementSibling.clientWidth),
+              false
+            )
+            ||
+            move.call(el, el.clientWidth - el.nextElementSibling.clientWidth)
+          )
         )
-      )
-    )).observe(el, {childList: true})
+      )).observe(el, {childList: true})
+    )
+    ||
+    true
   );
 }
 
@@ -90,89 +122,115 @@ function deconstructStation(previousStation) {
 }
 
 function play(line) {
+  pausedEarly = false;
   player.play();
   return line;
 }
 
 function pause(line) {
+  pausedEarly = true;
   player.pause();
   return line;
 }
 
 function displayContent(closestStationToUser, userLocation) {
-  (dom.stationEl.nextElementSibling.innerText = dom.stationEl.innerText = closestStationToUser.station_name)
-  &&
-  (dom.poemEl.nextElementSibling.innerText = dom.poemEl.innerText = closestStationToUser.audio[0].title)
-  &&
-  (dom.authorEl.nextElementSibling.innerText = dom.authorEl.innerText = closestStationToUser.audio[0].author)
-  &&
-  (dom.userDistanceEl.innerText = parseFloat(closestStationToUser.distanceToUser * degreeToMilesMultiplier).toFixed(2))
-  &&
-  (
-    dom.labelsEl.classList.remove('hidden')
-    ||
-    dom.userEl.classList.remove('hidden')
-    ||
-    constructMap(
-      closestStationToUser.station_location,
-      userLocation
+  (appLoadedAt > Date.now() - 1000)
+  ?
+    window.setTimeout(
+      displayContent.bind(this, closestStationToUser, userLocation),
+      500
     )
-  )
-  &&
-  (player.src = `audio/7/${closestStationToUser.audio[0].file}`)
-  &&
-  (player.play() || true);
+  :
+    (
+      hide(dom.loaderEl)
+      &&
+      show(dom.mapEl)
+      &&
+      (dom.stationEl.nextElementSibling.innerText =
+        dom.stationEl.innerText =
+          closestStationToUser.station_name)
+      &&
+      (dom.poemEl.nextElementSibling.innerText =
+        dom.poemEl.innerText =
+          closestStationToUser.audio[0].title)
+      &&
+      (dom.authorEl.nextElementSibling.innerText =
+        dom.authorEl.innerText =
+          closestStationToUser.audio[0].author)
+      &&
+      (dom.userDistanceEl.innerText =
+        parseFloat(
+          closestStationToUser.distanceToUser * degreeToMilesMultiplier
+        ).toFixed(2))
+      &&
+      (dom.labelsEl.classList.remove('hidden') || true)
+      &&
+      (dom.userEl.classList.remove('hidden') || true)
+      &&
+      constructMap(
+        closestStationToUser.station_location,
+        userLocation
+      )
+      &&
+      (player.src = `audio/7/${closestStationToUser.audio[0].file}`)
+      &&
+      !pausedEarly
+      &&
+      (player.play() || true)
+    );
 }
 
 function constructMap(stationLocation, userLocation) {
-  const map = new ol.Map({
-    view: new ol.View({
-      center: ol.proj.transform(
-        [stationLocation.longitude, stationLocation.latitude],
-        'EPSG:4326',
-        'EPSG:3857'
-      ),
-      zoom: 16
-    }),
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM()
+  return (
+    (dom.mapEl.style.height = `${dom.mapEl.getBoundingClientRect().height}px`)
+    &&
+    new ol.Map({
+      view: new ol.View({
+        center: ol.proj.transform(
+          [stationLocation.longitude, stationLocation.latitude],
+          'EPSG:4326',
+          'EPSG:3857'
+        ),
+        zoom: 16
       }),
-      new ol.layer.Vector({
-        style: new ol.style.Style({
-          image: new ol.style.Icon({
-            src: 'images/marker.png',
-            size: [21, 25]
-          })
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
         }),
-        source: new ol.source.Vector({
-          features: [
-            new ol.Feature({
-              geometry: new ol.geom.Point(
-                ol.proj.transform(
-                  [stationLocation.longitude, stationLocation.latitude],
-                  'EPSG:4326',
-                  'EPSG:3857'
-                )
-              )
-            }),
-            new ol.Feature({
-              geometry: new ol.geom.Point(
-                ol.proj.transform(
-                  [userLocation.longitude, userLocation.latitude],
-                  'EPSG:4326',
-                  'EPSG:3857'
-                )
-              )
+        new ol.layer.Vector({
+          style: new ol.style.Style({
+            image: new ol.style.Icon({
+              src: 'images/marker.png',
+              size: [21, 25]
             })
-          ]
+          }),
+          source: new ol.source.Vector({
+            features: [
+              new ol.Feature({
+                geometry: new ol.geom.Point(
+                  ol.proj.transform(
+                    [stationLocation.longitude, stationLocation.latitude],
+                    'EPSG:4326',
+                    'EPSG:3857'
+                  )
+                )
+              }),
+              new ol.Feature({
+                geometry: new ol.geom.Point(
+                  ol.proj.transform(
+                    [userLocation.longitude, userLocation.latitude],
+                    'EPSG:4326',
+                    'EPSG:3857'
+                  )
+                )
+              })
+            ]
+          })
         })
-      })
-    ],
-    target: "map"
-  });
-
-  return true;
+      ],
+      target: "map"
+    })
+  );
 }
 
 function getClosestStation(userLocation) {

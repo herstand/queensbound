@@ -30,10 +30,10 @@
   <h1 aria-label="Queensbound - Telling the stories of Queens"><img id="logo" src="images/logo.jpeg" alt="Queensbound logo" /></h1>
   <section id="content">
     <nav>
-      <button aria-label="play purple line" class="play" data-line="purple">▶</button>
-      <button aria-label="play blue line" class="play" data-line="blue">▶</button>
-      <button aria-label="play orange line" class="play" data-line="orange">▶</button>
-      <button aria-label="play yellow line" class="play" data-line="yellow">▶</button>
+      <button aria-label="play purple line" class="play" data-line="purple"><span class="playButton"></span></button>
+      <button aria-label="play blue line" class="play" data-line="blue"><span class="playButton"></span></button>
+      <button aria-label="play orange line" class="play" data-line="orange"><span class="playButton"></span></button>
+      <button aria-label="play yellow line" class="play" data-line="yellow"><span class="playButton"></span></button>
     </nav>
     <section class="hidden" id="labels">
       <h2><span class="prompt">Nearest Station: </span><span class="data" id="closestStation"></span><span class="hiddenData"></span></h2>
@@ -45,7 +45,8 @@
     </section>
   </section>
   <footer>
-    <div id="map"></div>
+    <div class="hidden" id="map"></div>
+    <img id="loader" class="hidden" alt="App is loading" src="images/loader.gif" />
   </footer>
  </main>
 </body>
