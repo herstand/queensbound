@@ -1,0 +1,159 @@
+html, body {
+  width:100%;
+  height:100%;
+  padding:0px;
+  margin:0px;
+  font-size:1em;
+  text-align:left;
+  background:black;
+}
+* {
+  box-sizing:border-box;
+  font-family:Helvetica, sans-serif;
+  margin:0px;
+  padding:0px;
+}
+.hidden {
+  display:none;
+}
+#logo {
+  max-width:100%;
+  width:650px;
+}
+#content {
+  position:relative;
+  width:650px;
+  max-width:100%;
+  margin:0px auto;
+  padding-left:10px;
+}
+nav {
+  width:100%;
+}
+.play {
+  color:black;
+  font-size:12px;
+  width:50px;
+  height:50px;
+  border-radius:50px;
+  border:3px solid black;
+  padding-left:4px;
+  padding-top:1px;
+  margin-right:18px;
+  margin-left:18px;
+  text-align:center;
+}
+.play:hover {
+  cursor:pointer;
+}
+.play:focus {
+  outline:none;
+}
+.play[data-line='purple'] {
+  background:#B933AD;
+}
+.play[data-line='blue'] {
+  background:blue;
+}
+.play[data-line='orange'] {
+  background:orange;
+}
+.play[data-line='yellow'] {
+  background:yellow;
+}
+
+main {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  overflow:hidden;
+}
+footer {
+  flex:1;
+}
+#map {
+  margin-top:20px;
+  width:100%;
+  height:100%;
+  border:1px solid black;
+  background:black;
+}
+h1, h2 {
+  text-align:left;
+  font-weight:bold;
+  color:#B933AD;
+}
+h1 {
+  margin:0px auto;
+  max-width:100%;
+}
+h2 {
+  max-width:100%;
+  font-size:1.6rem;
+  line-height:2rem;
+  padding-bottom:5px;
+}
+@media (min-width:0px) {
+  h1, #content {
+    margin-left:0px;
+  }
+}
+@media (min-width:650px) {
+  h1, #content {
+    margin-left:calc(50vw - 325px);
+  }
+  #content {
+    padding-left:25px;
+    padding-right:25px;
+  }
+}
+#labels {
+  margin-top:10px;
+}
+#labels h2 {
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  border-right: 10px solid black;
+}
+#labels h2 .prompt {
+  padding-right: 5px;
+  background:black;
+  z-index:2;
+  display:inline-block;
+  position: relative;
+}
+#labels h2 .data, #labels h2 .hiddenData {
+  font-weight:normal;
+  white-space:nowrap;
+  display: inline-block;
+  position: relative;
+  flex: 1;
+  z-index: 0;
+  transition:left 2s linear 1s;
+  left:0px;
+  overflow: hidden;
+}
+#labels h2 .hiddenData {
+  opacity:0;
+  position:absolute;
+}
+
+#user {
+  margin-top:10px;
+  margin-bottom:0px;
+}
+#user h2 {
+  color:white;
+  font-size:1.2em;
+  font-weight:normal;
+  line-height:1.3em;
+}
+#user h2 #userDistance:before, #user h2 #userDistance:after {
+  content:"\00a0";
+  position:relative;
+  display:inline-block;
+}

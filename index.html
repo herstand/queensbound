@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Queensbound Poetry</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+  <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css">
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/queensbound.js"></script>
+  <script type="text/javascript">
+  (() =>
+    ("geolocation" in navigator)
+    ?
+      window.addEventListener(
+        "DOMContentLoaded",
+        () => window.App(window),
+        false
+      )
+    :
+      alert("Sorry, Interactive Queensbound Poetry does not work on your web browser. Please access it from a web browser that supports geolocation access.")
+      &&
+      (window.location.href = "http://queensbound.com")
+  )();
+  </script>
+</head>
+<body>
+<main>
+  <h1 aria-label="Queensbound - Telling the stories of Queens"><img id="logo" src="images/logo.jpeg" alt="Queensbound logo" /></h1>
+  <section id="content">
+    <nav>
+      <button aria-label="play purple line" class="play" data-line="purple">▶</button>
+      <button aria-label="play blue line" class="play" data-line="blue">▶</button>
+      <button aria-label="play orange line" class="play" data-line="orange">▶</button>
+      <button aria-label="play yellow line" class="play" data-line="yellow">▶</button>
+    </nav>
+    <section class="hidden" id="labels">
+      <h2><span class="prompt">Nearest Station: </span><span class="data" id="closestStation"></span><span class="hiddenData"></span></h2>
+      <h2><span class="prompt">Playing: </span><span class="data" id="poem"></span><span class="hiddenData"></span></h2>
+      <h2><span class="prompt">By: </span><span class="data" id="author"></span><span class="hiddenData"></span></h2>
+    </section>
+    <section class="hidden" id="user">
+      <h2><span class="prePrompt">You are</span><span id="userDistance"></span><span class="postPrompt">miles away from this station/poem.</span></h2>
+    </section>
+  </section>
+  <footer>
+    <div id="map"></div>
+  </footer>
+ </main>
+</body>
+</html>

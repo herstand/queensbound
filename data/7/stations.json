@@ -1,0 +1,58 @@
+[
+  {
+    "station_name": "45 Rd-Court House Sq",
+    "station_location": {
+      "latitude": 40.747023,
+      "longitude": -73.945264
+    }
+  },
+  {
+    "station_name": "Rawson St-33rd St",
+    "station_location": {
+      "latitude": 40.744587,
+      "longitude": -73.930997
+    }
+  },
+  {
+    "station_name": "Lowery St-40th St",
+    "station_location": {
+      "latitude": 40.743781,
+      "longitude": -73.924016
+    }
+  },
+  {
+    "station_name": "Bliss St-46th St",
+    "station_location": {
+      "latitude": 40.743132,
+      "longitude": -73.918435
+    }
+  },
+  {
+    "station_name": "Lincoln Av-52nd St",
+    "station_location": {
+      "latitude": 40.744149,
+      "longitude": -73.912549
+    }
+  },
+  {
+    "station_name": "Broadway-74th St",
+    "station_location": {
+      "latitude": 40.746848,
+      "longitude": -73.891394
+    }
+  },
+  {
+    "station_name": "82nd St-Jackson Heights",
+    "station_location": {
+      "latitude": 40.747659,
+      "longitude": -73.883697
+    }
+  },
+  {
+    "station_name": "90th St Elmhurst",
+    "station_location": {
+      "latitude": 40.748408,
+      "longitude": -73.876613
+    }
+  }
+]
