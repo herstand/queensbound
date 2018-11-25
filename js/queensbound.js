@@ -31,6 +31,8 @@ function init() {
     checkOverflow()
     &&
     loadLocation()
+    &&
+    window.setInterval(loadLocation, 5000)
   );
 }
 
@@ -67,7 +69,7 @@ function checkOverflow() {
             el.addEventListener(
               "transitionend",
               move.bind(el, el.clientWidth - el.nextElementSibling.clientWidth),
-              false
+              {passive: true}
             )
             ||
             move.call(el, el.clientWidth - el.nextElementSibling.clientWidth)
@@ -169,7 +171,8 @@ function displayContent(closestStationToUser, userLocation) {
       &&
       constructMap(
         closestStationToUser.station_location,
-        userLocation
+        userLocation,
+        closestStationToUser.distanceToUser
       )
       &&
       (player.src = `audio/7/${closestStationToUser.audio[0].file}`)
@@ -180,51 +183,66 @@ function displayContent(closestStationToUser, userLocation) {
     );
 }
 
-function constructMap(stationLocation, userLocation) {
+function constructMap(stationLocation, userLocation, distanceToUser) {
+  const mapMarker = (
+    new ol.Feature({
+      geometry: new ol.geom.Point(
+        ol.proj.transform(
+          [stationLocation.longitude, stationLocation.latitude],
+          'EPSG:4326',
+          'EPSG:3857'
+        )
+      )
+    })
+  );
+  const personMarker = (
+    new ol.Feature({
+      geometry: new ol.geom.Point(
+        ol.proj.transform(
+          [userLocation.longitude, userLocation.latitude],
+          'EPSG:4326',
+          'EPSG:3857'
+        )
+      )
+    })
+  );
+
+  mapMarker.setStyle(
+    new ol.style.Style({
+      image: new ol.style.Icon({
+        src: 'images/poem.png',
+        size: [17, 25]
+      })
+    })
+  );
+  personMarker.setStyle(
+    new ol.style.Style({
+      image: new ol.style.Icon({
+        src: 'images/person.png',
+        scale: .5
+      })
+    })
+  );
+
   return (
     (dom.mapEl.style.height = `${dom.mapEl.getBoundingClientRect().height}px`)
     &&
     new ol.Map({
       view: new ol.View({
         center: ol.proj.transform(
-          [stationLocation.longitude, stationLocation.latitude],
+          [(userLocation.longitude + stationLocation.longitude)/2, (userLocation.latitude + stationLocation.latitude)/2],
           'EPSG:4326',
           'EPSG:3857'
         ),
-        zoom: 16
+        zoom: parseInt(Math.log(1000 / distanceToUser), 10)
       }),
       layers: [
         new ol.layer.Tile({
           source: new ol.source.OSM()
         }),
         new ol.layer.Vector({
-          style: new ol.style.Style({
-            image: new ol.style.Icon({
-              src: 'images/marker.png',
-              size: [21, 25]
-            })
-          }),
           source: new ol.source.Vector({
-            features: [
-              new ol.Feature({
-                geometry: new ol.geom.Point(
-                  ol.proj.transform(
-                    [stationLocation.longitude, stationLocation.latitude],
-                    'EPSG:4326',
-                    'EPSG:3857'
-                  )
-                )
-              }),
-              new ol.Feature({
-                geometry: new ol.geom.Point(
-                  ol.proj.transform(
-                    [userLocation.longitude, userLocation.latitude],
-                    'EPSG:4326',
-                    'EPSG:3857'
-                  )
-                )
-              })
-            ]
+            features: [mapMarker, personMarker]
           })
         })
       ],

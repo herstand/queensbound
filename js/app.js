@@ -21,25 +21,25 @@ var playing = {
 dom.playPurple.addEventListener(
   'click',
   playPause,
-  false
+  {passive: true}
 );
 
 dom.playBlue.addEventListener(
   'click',
   alert.bind(this, "Coming soon!"),
-  false
+  {passive: true}
 );
 
 dom.playOrange.addEventListener(
   'click',
   alert.bind(this, "Coming soon!"),
-  false
+  {passive: true}
 );
 
 dom.playYellow.addEventListener(
   'click',
   alert.bind(this, "Coming soon!"),
-  false
+  {passive: true}
 );
 
 function playPause(e) {
