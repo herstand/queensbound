@@ -11,22 +11,23 @@ var pausedEarly = false;
 const degreeToMilesMultiplier = 69;
 const appLoadedAt = Date.now();
 const dom = {
-  labelsEl : document.getElementById("labels"),
-  userEl : document.getElementById("user"),
-  userDistanceEl : document.getElementById("userDistance"),
-  mapEl : document.getElementById("map"),
-  stationEl : document.getElementById("closestStation"),
-  poemEl : document.getElementById("poem"),
-  authorEl : document.getElementById("author"),
+  labels : document.getElementById("labels"),
+  user : document.getElementById("user"),
+  userDistance  : document.getElementById("userDistance"),
+  map : document.getElementById("map"),
+  station : document.getElementById("closestStation"),
+  poem : document.getElementById("poem"),
+  author : document.getElementById("author"),
   dataEls : document.querySelectorAll(".data"),
-  loaderEl : document.getElementById("loader")
+  loader : document.getElementById("loader"),
+  noLocation : document.getElementById("noLocation")
 };
 
 init();
 
 function init() {
   return (
-    show(dom.loaderEl)
+    show(dom.loader)
     &&
     checkOverflow()
     &&
@@ -109,7 +110,7 @@ function loadLocation() {
       &&
       displayContent(closestStationToUser.value, position.coords)
     ),
-    (error) => console.error(error)
+    (error) => hide(dom.loader) && show(dom.noLocation)
   );
 }
 
@@ -144,30 +145,30 @@ function displayContent(closestStationToUser, userLocation) {
     )
   :
     (
-      hide(dom.loaderEl)
+      hide(dom.loader)
       &&
-      show(dom.mapEl)
+      show(dom.map)
       &&
-      (dom.stationEl.nextElementSibling.innerText =
-        dom.stationEl.innerText =
+      (dom.station.nextElementSibling.innerText =
+        dom.station.innerText =
           closestStationToUser.station_name)
       &&
-      (dom.poemEl.nextElementSibling.innerText =
-        dom.poemEl.innerText =
+      (dom.poem.nextElementSibling.innerText =
+        dom.poem.innerText =
           closestStationToUser.audio[0].title)
       &&
-      (dom.authorEl.nextElementSibling.innerText =
-        dom.authorEl.innerText =
+      (dom.author.nextElementSibling.innerText =
+        dom.author.innerText =
           closestStationToUser.audio[0].author)
       &&
-      (dom.userDistanceEl.innerText =
+      (dom.userDistance.innerText =
         parseFloat(
           closestStationToUser.distanceToUser * degreeToMilesMultiplier
         ).toFixed(2))
       &&
-      (dom.labelsEl.classList.remove('hidden') || true)
+      (dom.labels.classList.remove('hidden') || true)
       &&
-      (dom.userEl.classList.remove('hidden') || true)
+      (dom.user.classList.remove('hidden') || true)
       &&
       constructMap(
         closestStationToUser.station_location,
@@ -184,6 +185,7 @@ function displayContent(closestStationToUser, userLocation) {
 }
 
 function constructMap(stationLocation, userLocation, distanceToUser) {
+  console.log(distanceToUser);
   const mapMarker = (
     new ol.Feature({
       geometry: new ol.geom.Point(
@@ -225,7 +227,7 @@ function constructMap(stationLocation, userLocation, distanceToUser) {
   );
 
   return (
-    (dom.mapEl.style.height = `${dom.mapEl.getBoundingClientRect().height}px`)
+    (dom.map.style.height = `${dom.map.getBoundingClientRect().height}px`)
     &&
     new ol.Map({
       view: new ol.View({
@@ -234,7 +236,7 @@ function constructMap(stationLocation, userLocation, distanceToUser) {
           'EPSG:4326',
           'EPSG:3857'
         ),
-        zoom: parseInt(Math.log(1000 / distanceToUser), 10)
+        zoom: Math.round(-1.424182295 * Math.log(distanceToUser) + 7.9)
       }),
       layers: [
         new ol.layer.Tile({
