@@ -36,7 +36,7 @@ function init() {
   return (
     show(dom.loader)
     &&
-    checkOverflow()
+    setupMoveEventsForLabels()
     &&
     loadLocation()
   );
@@ -58,7 +58,7 @@ function hide(el) {
   );
 }
 
-function checkOverflow() {
+function setupMoveEventsForLabels() {
   return (
     dom.dataEls.forEach((el) =>
       (new MutationObserver((mutations) =>
@@ -66,20 +66,15 @@ function checkOverflow() {
           (
             mutation.type === "childList"
             &&
-            mutation.target.nextElementSibling.clientWidth
-            >
-            mutation.target.clientWidth
+            (
+              mutation.target.nextElementSibling.clientWidth >
+                mutation.target.clientWidth
+            )
           )
           &&
-          (
-            el.addEventListener(
-              "transitionend",
-              move.bind(el, el.clientWidth - el.nextElementSibling.clientWidth),
-              {passive: true}
-            )
-            ||
-            move.call(el, el.clientWidth - el.nextElementSibling.clientWidth)
-          )
+          setupMoveBackListener(el)
+          &&
+          moveLabelToShowOverflow.call(el)
         )
       )).observe(el, {childList: true})
     )
@@ -88,15 +83,41 @@ function checkOverflow() {
   );
 }
 
-function move(distance) {
-  return (
-    (!this.style.left || this.style.left === "0px")
-    ?
-      (
-        (this.style.overflow = "visible")
-        &&
-        (this.style.left = `${distance}px`)
+function getLabelOverflowWidth() {
+  return ["setup", "action", "cleanup"].reduce(
+    (labelOverflowWidth, type) => (
+      (type === "setup")
+      ?
+        (this.style.overflow = "hidden")
+      :(
+        (type === "action")
+        ?
+          (this.clientWidth - this.nextElementSibling.clientWidth)
+          :
+          ((this.style.overflow = "visible") && labelOverflowWidth)
       )
+    ),
+    0
+  );
+}
+
+function setupMoveBackListener(el) {
+  return (
+      el.addEventListener(
+      "transitionend",
+      moveLabelToShowOverflow.bind(el),
+      {passive: true}
+    )
+    ||
+    true
+  );
+}
+
+function moveLabelToShowOverflow() {
+  return (
+    (window.getComputedStyle(this).left === "0px")
+    ?
+      (this.style.left = `${getLabelOverflowWidth.call(this)}px`)
     :
       (this.style.left = "0px")
   );
@@ -117,6 +138,15 @@ function loadLocation() {
 
 function moveUser(closestStationToUser, userLocation) {
   return (
+    (
+      dom.userDistance.innerText =
+        parseFloat(
+          closestStationToUser.distanceToUser
+          *
+          degreeToMilesMultiplier
+        ).toFixed(2)
+    )
+    &&
     map.featureSource.getFeatureById("person").setGeometry(
       new ol.geom.Point(
         ol.proj.transform(
