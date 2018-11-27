@@ -2,15 +2,9 @@ function QPlayer(global, player) {
 "use strict";
 
 // Constructor
-var sevenTrainStations = [{"station_name":"45 Rd-Court House Sq","station_location":{"latitude":40.747023,"longitude":-73.945264},"audio":[{"author":"Rosebud Ben","title":"Matarose Tags G-Dragon on the 7","file":"Matarose Tags G - Dragon on the 7 by Rosebud Ben-Oni.mp3"}]},{"station_name":"Rawson St-33rd St","station_location":{"latitude":40.744587,"longitude":-73.930997},"audio":[{"author":"Safia Jama","title":"Industrial Design & Sunset","file":"Industrial Design & Sunset by Safia Jama.mp3"}]},{"station_name":"Lowery St-40th St","station_location":{"latitude":40.743781,"longitude":-73.924016},"audio":[{"author":"Paolo Javier","title":"A True Account of Talking to the 7 Line in Sunnyside","file":"A True Account of Talking to the 7 In Sunnyside by Paolo Javier.mp3"}]},{"station_name":"Bliss St-46th St","station_location":{"latitude":40.743132,"longitude":-73.918435},"audio":[{"author":"KC Trommer","title":"7 to 46th Street/Bliss","file":"7 to 46th Street_Bliss by KC Trommer.mp3"}]},{"station_name":"Lincoln Av-52nd St","station_location":{"latitude":40.744149,"longitude":-73.912549},"audio":[{"author":"Joseph O. Legaspi","title":"[ their spine ]","file":"[ their spine ] by Joseph O. Legaspi.mp3"},{"author":"Nicole Hartounian","title":"Next Summer","file":"Next Summer by Nicole Haroutunian.mp3"}]},{"station_name":"Broadway-74th St","station_location":{"latitude":40.746848,"longitude":-73.891394},"audio":[{"author":"Ananda Lima","title":"When They Come for Us on the 7 Train","file":"When They Come for Us on the 7 Train by Ananda Lima.mp3"}]},{"station_name":"82nd St-Jackson Heights","station_location":{"latitude":40.747659,"longitude":-73.883697},"audio":[{"author":"Vikas K. Menon","title":"Queens Communion","file":"Queens Communion by Vikas K. Menon.mp3"}]},{"station_name":"90th St Elmhurst","station_location":{"latitude":40.748408,"longitude":-73.876613},"audio":[{"author":"Abeer Y. Hoque","title":"Here I Love You New York","file":"Here I Love You New York by Abeer Y. Hoque.mp3"}]}];
-var closestStationToUser = {
-  value : null,
-  tempValue : null
-};
-var pausedEarly = false;
-var featureSource = null;
+const sevenTrainStations = [{"station_name":"45 Rd-Court House Sq","station_location":{"latitude":40.747023,"longitude":-73.945264},"audio":[{"author":"Rosebud Ben","title":"Matarose Tags G-Dragon on the 7","file":"Matarose Tags G - Dragon on the 7 by Rosebud Ben-Oni.mp3"}]},{"station_name":"Rawson St-33rd St","station_location":{"latitude":40.744587,"longitude":-73.930997},"audio":[{"author":"Safia Jama","title":"Industrial Design & Sunset","file":"Industrial Design & Sunset by Safia Jama.mp3"}]},{"station_name":"Lowery St-40th St","station_location":{"latitude":40.743781,"longitude":-73.924016},"audio":[{"author":"Paolo Javier","title":"A True Account of Talking to the 7 Line in Sunnyside","file":"A True Account of Talking to the 7 In Sunnyside by Paolo Javier.mp3"}]},{"station_name":"Bliss St-46th St","station_location":{"latitude":40.743132,"longitude":-73.918435},"audio":[{"author":"KC Trommer","title":"7 to 46th Street/Bliss","file":"7 to 46th Street_Bliss by KC Trommer.mp3"}]},{"station_name":"Lincoln Av-52nd St","station_location":{"latitude":40.744149,"longitude":-73.912549},"audio":[{"author":"Joseph O. Legaspi","title":"[ their spine ]","file":"[ their spine ] by Joseph O. Legaspi.mp3"},{"author":"Nicole Hartounian","title":"Next Summer","file":"Next Summer by Nicole Haroutunian.mp3"}]},{"station_name":"Broadway-74th St","station_location":{"latitude":40.746848,"longitude":-73.891394},"audio":[{"author":"Ananda Lima","title":"When They Come for Us on the 7 Train","file":"When They Come for Us on the 7 Train by Ananda Lima.mp3"}]},{"station_name":"82nd St-Jackson Heights","station_location":{"latitude":40.747659,"longitude":-73.883697},"audio":[{"author":"Vikas K. Menon","title":"Queens Communion","file":"Queens Communion by Vikas K. Menon.mp3"}]},{"station_name":"90th St Elmhurst","station_location":{"latitude":40.748408,"longitude":-73.876613},"audio":[{"author":"Abeer Y. Hoque","title":"Here I Love You New York","file":"Here I Love You New York by Abeer Y. Hoque.mp3"}]}];
 const degreeToMilesMultiplier = 69;
-const stationRadiusInDegrees = .005;
+const stationRadiusInDegrees = .002;
 const appLoadedAt = Date.now();
 const dom = {
   labels : document.getElementById("labels"),
@@ -24,6 +18,17 @@ const dom = {
   loader : document.getElementById("loader"),
   noLocation : document.getElementById("noLocation")
 };
+const closestStationToUser = {
+  value : null,
+  tempValue : null
+};
+const map = {
+  map: null,
+  featureSource: null,
+  MAX_ZOOM: 17
+};
+var pausedEarly = false;
+
 
 init();
 
@@ -104,17 +109,15 @@ function loadLocation() {
       ?
         loadNewStation(closestStationToUser, position.coords)
       :
-        moveUser(position.coords)
+        moveUser(closestStationToUser.value, position.coords)
     ),
     (error) => hide(dom.loader) && show(dom.noLocation)
   );
 }
 
-function moveUser(userLocation) {
-  // const coordinate = feature.getGeometry().getCoordinates();
-  // ol.coordinate.add(coordinate, 10, 10);
+function moveUser(closestStationToUser, userLocation) {
   return (
-    featureSource.getFeatureById("person").setGeometry(
+    map.featureSource.getFeatureById("person").setGeometry(
       new ol.geom.Point(
         ol.proj.transform(
           [userLocation.longitude, userLocation.latitude],
@@ -122,6 +125,14 @@ function moveUser(userLocation) {
           'EPSG:3857'
         )
       )
+    )
+    ||
+    map.map.getView().setZoom(
+      getZoomLevel(closestStationToUser.distanceToUser)
+    )
+    ||
+    map.map.getView().setCenter(
+      getMapCenter(closestStationToUser.station_location, userLocation)
     )
   );
 }
@@ -142,7 +153,7 @@ function hasUserEnteredStationRadius(closestStationToUser) {
   return (
     (closestStationToUser.tempValue !== closestStationToUser.value)
     &&
-    closestStationToUser.distanceToUser < stationRadiusInDegrees
+    closestStationToUser.tempValue.distanceToUser < stationRadiusInDegrees
   );
 }
 
@@ -271,7 +282,7 @@ function constructMap(stationLocation, userLocation, distanceToUser) {
     })
   );
 
-  featureSource = (
+  map.featureSource = (
     new ol.source.Vector({
       features: [poemMarker, personMarker]
     })
@@ -280,25 +291,39 @@ function constructMap(stationLocation, userLocation, distanceToUser) {
   return (
     (dom.map.style.height = `${dom.map.getBoundingClientRect().height}px`)
     &&
-    new ol.Map({
+    (map.map = new ol.Map({
       view: new ol.View({
-        center: ol.proj.transform(
-          [(userLocation.longitude + stationLocation.longitude)/2, (userLocation.latitude + stationLocation.latitude)/2],
-          'EPSG:4326',
-          'EPSG:3857'
-        ),
-        zoom: Math.round(-1.424182295 * Math.log(distanceToUser) + 7.9)
+        center: getMapCenter(stationLocation, userLocation),
+        zoom: getZoomLevel(distanceToUser)
       }),
       layers: [
         new ol.layer.Tile({
           source: new ol.source.OSM()
         }),
         new ol.layer.Vector({
-          source: featureSource
+          source: map.featureSource
         })
       ],
       target: "map"
-    })
+    }))
+  );
+}
+
+function getMapCenter(stationLocation, userLocation) {
+  return ol.proj.transform(
+    [
+      (userLocation.longitude + stationLocation.longitude)/2,
+      (userLocation.latitude + stationLocation.latitude)/2
+    ],
+    'EPSG:4326',
+    'EPSG:3857'
+  );
+}
+
+function getZoomLevel(distanceBetweenMarkers) {
+  return Math.min(
+    map.MAX_ZOOM,
+    Math.round(-1.424182295 * Math.log(distanceBetweenMarkers) + 7.9)
   );
 }
 
