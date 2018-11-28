@@ -62,17 +62,32 @@ nav {
 .play:focus {
   outline:none;
 }
+h1, h2 {
+  color:white;
+}
 .play[data-line='purple'] {
   background:#B933AD;
+}
+[data-line='purple'] h1, [data-line='purple'] h2 {
+  color:#B933AD;
 }
 .play[data-line='blue'] {
   background:blue;
 }
+[data-line='blue'] h1, [data-line='blue'] h2 {
+  color:blue;
+}
 .play[data-line='orange'] {
   background:orange;
 }
+[data-line='orange'] h1, [data-line='orange'] h2 {
+  color:orange;
+}
 .play[data-line='yellow'] {
   background:yellow;
+}
+[data-line='yellow'] h1, [data-line='yellow'] h2 {
+  color:yellow;
 }
 
 main {
@@ -95,7 +110,6 @@ footer {
 h1, h2 {
   text-align:left;
   font-weight:bold;
-  color:#B933AD;
 }
 h1 {
   margin:0px auto;
