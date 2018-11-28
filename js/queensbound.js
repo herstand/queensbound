@@ -5,6 +5,7 @@ function QPlayer(global, player) {
 const sevenTrainStations = [{"station_name":"45 Rd-Court House Sq","station_location":{"latitude":40.747023,"longitude":-73.945264},"audio":[{"author":"Rosebud Ben","title":"Matarose Tags G-Dragon on the 7","file":"Matarose Tags G - Dragon on the 7 by Rosebud Ben-Oni.mp3"}]},{"station_name":"Rawson St-33rd St","station_location":{"latitude":40.744587,"longitude":-73.930997},"audio":[{"author":"Safia Jama","title":"Industrial Design & Sunset","file":"Industrial Design & Sunset by Safia Jama.mp3"}]},{"station_name":"Lowery St-40th St","station_location":{"latitude":40.743781,"longitude":-73.924016},"audio":[{"author":"Paolo Javier","title":"A True Account of Talking to the 7 Line in Sunnyside","file":"A True Account of Talking to the 7 In Sunnyside by Paolo Javier.mp3"}]},{"station_name":"Bliss St-46th St","station_location":{"latitude":40.743132,"longitude":-73.918435},"audio":[{"author":"KC Trommer","title":"7 to 46th Street/Bliss","file":"7 to 46th Street_Bliss by KC Trommer.mp3"}]},{"station_name":"Lincoln Av-52nd St","station_location":{"latitude":40.744149,"longitude":-73.912549},"audio":[{"author":"Joseph O. Legaspi","title":"[ their spine ]","file":"[ their spine ] by Joseph O. Legaspi.mp3"},{"author":"Nicole Hartounian","title":"Next Summer","file":"Next Summer by Nicole Haroutunian.mp3"}]},{"station_name":"Broadway-74th St","station_location":{"latitude":40.746848,"longitude":-73.891394},"audio":[{"author":"Ananda Lima","title":"When They Come for Us on the 7 Train","file":"When They Come for Us on the 7 Train by Ananda Lima.mp3"}]},{"station_name":"82nd St-Jackson Heights","station_location":{"latitude":40.747659,"longitude":-73.883697},"audio":[{"author":"Vikas K. Menon","title":"Queens Communion","file":"Queens Communion by Vikas K. Menon.mp3"}]},{"station_name":"90th St Elmhurst","station_location":{"latitude":40.748408,"longitude":-73.876613},"audio":[{"author":"Abeer Y. Hoque","title":"Here I Love You New York","file":"Here I Love You New York by Abeer Y. Hoque.mp3"}]}];
 const degreeToMilesMultiplier = 69;
 const stationRadiusInDegrees = .002;
+const USER_MOVE_MIN_THRESHOLD = .0005;
 const appLoadedAt = Date.now();
 const dom = {
   labels : document.getElementById("labels"),
@@ -22,6 +23,12 @@ const closestStationToUser = {
   value : null,
   tempValue : null
 };
+const user = {
+  location : {
+    longitude : null,
+    latitude : null
+  }
+}
 const map = {
   map: null,
   featureSource: null,
@@ -129,15 +136,30 @@ function loadLocation() {
       hasUserMovedStations(closestStationToUser, position.coords)
       ?
         loadNewStation(closestStationToUser, position.coords)
-      :
+      : (
+        hasUserMoved(user.location, position.coords)
+        &&
         moveUser(closestStationToUser.value, position.coords)
+      )
     ),
     (error) => hide(dom.loader) && show(dom.noLocation)
   );
 }
 
+function hasUserMoved(userPositionOld, userPositionNew) {
+  return (
+    getDistance(userPositionOld, userPositionNew)
+    >
+    USER_MOVE_MIN_THRESHOLD
+  );
+}
+
 function moveUser(closestStationToUser, userLocation) {
   return (
+    (
+        user.location = userLocation
+    )
+    &&
     (
       dom.userDistance.innerText =
         parseFloat(
