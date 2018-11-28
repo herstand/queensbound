@@ -19,6 +19,10 @@ html, body {
 #logo {
   width:100%;
 }
+#instructions {
+  padding:20px 15px;
+  line-height:1.5em;
+}
 #content {
   position:relative;
   width:100%;

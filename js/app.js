@@ -15,17 +15,18 @@ const dom = {
     orange : document.querySelector('.play[data-line="orange"] .playButton'),
     yellow : document.querySelector('.play[data-line="yellow"] .playButton')
   },
-  labels : document.getElementById('labels')
+  labels : document.getElementById('labels'),
+  instructions : document.getElementById('instructions')
 };
 const audio = new (global.AudioContext || global.webkitAudioContext);
 const supportedLines = ['purple'];//, 'blue', 'orange', 'yellow'];
-var appBegun = false;
-var playing = {
+const playing = {
   purple : false,
   blue : false,
   orange : false,
   yellow : false
 };
+var appBegun = false;
 
 supportedLines.forEach((line) =>
   dom.playPauseButton[line].addEventListener(
@@ -37,49 +38,45 @@ supportedLines.forEach((line) =>
 
 function playPause(e) {
   return (
-    appBegun && Object.values(playing).some((val) => val)
+    (appBegun && Object.values(playing).some((val) => val))
     ?
       (
-        dom.playPauseIcon[this.dataset.line].classList.remove("paused")
-        ||
-        (
-          playing[
-            global.Queensbound.pause(
-              Object.entries(playing).find(
-                (playingLine) => playingLine[1]
-              )[0]
-            )
-          ] = false
-        )
+        (dom.playPauseIcon[this.dataset.line].classList.remove('paused') || true)
+        &&
+        (playing[
+          global.Queensbound.pause(
+            Object.entries(playing).find((playingLine) => playingLine[1])[0]
+          )
+        ]
+        =
+          false)
       )
     :
       (
         appBegun
         ?
-        (
           (playing[this.dataset.line] = true)
           &&
           (labels.dataset.line = this.dataset.line)
           &&
-          dom.playPauseIcon[this.dataset.line].classList.add("paused")
-          ||
+          (dom.playPauseIcon[this.dataset.line].classList.add('paused') || true)
+          &&
           Queensbound.play(this.dataset.line)
-        )
         :
-        (
           (appBegun = true)
           &&
           (playing[this.dataset.line] = true)
           &&
           (labels.dataset.line = this.dataset.line)
           &&
-          dom.playPauseIcon[this.dataset.line].classList.add("paused")
-          ||
+          (dom.playPauseIcon[this.dataset.line].classList.add('paused') || true)
+          &&
+          (dom.instructions.classList.add('hidden') || true)
+          &&
           audio.resume()
           .then(() =>
             global.Queensbound = new QPlayer(global, new Audio(), this.dataset.line)
           )
-        )
       )
   );
 }
