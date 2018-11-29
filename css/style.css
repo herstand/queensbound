@@ -21,7 +21,10 @@ html, body {
 }
 #instructions {
   padding:20px 15px;
-  line-height:1.5em;
+  line-height:1.3em;
+}
+#instructions p {
+  margin-bottom:15px;
 }
 #content {
   position:relative;
@@ -105,7 +108,6 @@ footer {
   overflow:hidden;
 }
 #map {
-  margin-top:20px;
   width:100%;
   height:100%;
   border:1px solid black;

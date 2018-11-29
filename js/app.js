@@ -19,7 +19,8 @@ const dom = {
   instructions : document.getElementById('instructions')
 };
 const audio = new (global.AudioContext || global.webkitAudioContext);
-const supportedLines = ['purple'];//, 'blue', 'orange', 'yellow'];
+const supportedLines = ['purple'];
+const unsupportedLines = ['blue', 'orange', 'yellow'];
 const playing = {
   purple : false,
   blue : false,
@@ -35,6 +36,18 @@ supportedLines.forEach((line) =>
     {passive: true}
   )
 );
+
+unsupportedLines.forEach((line) =>
+  dom.playPauseButton[line].addEventListener(
+    'click',
+    unsupported.bind(this, line),
+    {passive: true}
+  )
+);
+
+function unsupported(line) {
+  alert(`The ${line} line is coming soon!`);
+}
 
 function playPause(e) {
   return (
