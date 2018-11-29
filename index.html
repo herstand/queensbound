@@ -30,12 +30,18 @@
   <h1 aria-label="Queensbound - Telling the stories of Queens"><img id="logo" src="images/logo.jpeg" alt="Queensbound logo" /></h1>
   <section id="content">
     <nav>
-      <button aria-label="play purple line" class="play" data-line="purple"><span class="playButton"></span></button>
-      <button aria-label="play blue line" class="play" data-line="blue"><span class="playButton"></span></button>
-      <button aria-label="play orange line" class="play" data-line="orange"><span class="playButton"></span></button>
-      <button aria-label="play yellow line" class="play" data-line="yellow"><span class="playButton"></span></button>
+      <button aria-label="play purple line" class="play" data-line="purple"><span class="playIcon"></span></button>
+      <button aria-label="play blue line" class="play" data-line="blue"><span class="playIcon"></span></button>
+      <button aria-label="play orange line" class="play" data-line="orange"><span class="playIcon"></span></button>
+      <button aria-label="play yellow line" class="play" data-line="yellow"><span class="playIcon"></span></button>
     </nav>
-    <h2 id="instructions"><p>Play poems along a <em>Queensbound</em> train line.</p><p>Choose a color above to begin.</p></h2>
+    <section id="instructions">
+      <h2>Welcome to the Queensbound App!</h2>
+      <p>With this app, you can listen to the stories of Queens—<em>where they were recorded</em>.</p>
+      <p>Tap a train line's play button, above, to hear a story recorded at the nearest subway station to your current location. As you move from station to station in Queens, new stories will play automatically.</p>
+      <p class="note"><em>Please note: Queensbound will require access to your location to begin.</em></p>
+      <p class="contact"><em>Contact <a href="mailto:MicahHerstand+QUEENSBOUND@gmail.com?subject=Queensbound+Inquiry">Micah Cowsik-Herstand</a> with any questions or suggestions.</em></p>
+    </section>
     <section class="hidden" id="labels" data-line="">
       <h2><span class="prompt">Nearest Station: </span><span class="data" id="closestStation"></span><span class="hiddenData"></span></h2>
       <h2><span class="prompt">Playing: </span><span class="data" id="poem"></span><span class="hiddenData"></span></h2>

@@ -10,10 +10,10 @@ const dom = {
     yellow : document.querySelector('.play[data-line="yellow"]')
   },
   playPauseIcon : {
-    purple : document.querySelector('.play[data-line="purple"] .playButton'),
-    blue : document.querySelector('.play[data-line="blue"] .playButton'),
-    orange : document.querySelector('.play[data-line="orange"] .playButton'),
-    yellow : document.querySelector('.play[data-line="yellow"] .playButton')
+    purple : document.querySelector('.play[data-line="purple"] .playIcon'),
+    blue : document.querySelector('.play[data-line="blue"] .playIcon'),
+    orange : document.querySelector('.play[data-line="orange"] .playIcon'),
+    yellow : document.querySelector('.play[data-line="yellow"] .playIcon')
   },
   labels : document.getElementById('labels'),
   instructions : document.getElementById('instructions')
