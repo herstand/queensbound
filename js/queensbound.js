@@ -36,6 +36,7 @@ const appState = {
       latitude : null
     }
   },
+  trainLine : line,
   closestStationToUser : null,
   map : {
     map : null,
@@ -43,17 +44,25 @@ const appState = {
   },
   audio : {
     userPaused : false,
-    pauseable : false
+    pauseable : false,
+    fileIndex : -1
   }
 };
 
 // INITIALIZER
 show(dom.loader)
 &&
-setupMoveEventsForLabels()
+setupEvents()
 &&
-loadLocation();
+loadApp();
 
+function setupEvents() {
+  return (
+    setupMoveEventsForLabels()
+    &&
+    setupEventToPlayNext()
+  );
+}
 
 function setupMoveEventsForLabels() {
   return (
@@ -120,11 +129,40 @@ function moveLabelToShowOverflow() {
   );
 }
 
-function loadLocation() {
+function moveToNextTrack(e) {
+  return (
+    (player.currentTime >= player.duration)
+    &&
+    (appState.closestStationToUser.files.length > appState.audio.fileIndex + 1)
+    &&
+    updateContentFromFile(
+      appState.closestStationToUser,
+      appState.audio.fileIndex += 1
+    )
+    &&
+    play(appState.trainLine)
+  );
+}
+
+function setupEventToPlayNext() {
+  return (
+    player.addEventListener(
+      'timeupdate',
+      moveToNextTrack,
+      {passive: true}
+    )
+    ||
+    true
+  );
+}
+
+function loadApp() {
   return navigator.geolocation.watchPosition(
     (position) => (
       hasUserMovedStations(appState.closestStationToUser, position.coords)
       ?
+        ((appState.audio.fileIndex = 0) || true)
+        &&
         restartUI(
           getClosestStationTo(position.coords),
           position.coords
@@ -221,7 +259,7 @@ function hasUserMovedStations(closestStationToUser, userLocation) {
   );
 }
 
-function play(line) {
+function play(trainLine) {
   return (
     ((appState.audio.userPaused = false) || true)
     &&
@@ -230,25 +268,25 @@ function play(line) {
       .then(() => appState.audio.pauseable = true)
     )
     &&
-    line
+    trainLine
   )
 }
 
-function userPause(line) {
+function userPause(trainLine) {
   return (
     (appState.audio.userPaused = true)
     &&
-    pause(line)
+    pause(trainLine)
   );
 }
 
-function pause(line) {
+function pause(trainLine) {
   return (
     appState.audio.pauseable
     &&
     (player.pause() || true)
     &&
-    line
+    trainLine
   ) || true;
 }
 
@@ -256,26 +294,18 @@ function restartUI(closestStationToUser, userLocation) {
   return (
     hide(dom.loader)
     &&
+    (dom.labels.classList.remove('hidden') || true)
+    &&
+    (dom.user.classList.remove('hidden') || true)
+    &&
     (dom.station.nextElementSibling.innerText =
       dom.station.innerText =
         closestStationToUser.station_name)
-    &&
-    (dom.poem.nextElementSibling.innerText =
-      dom.poem.innerText =
-        closestStationToUser.files[0].title)
-    &&
-    (dom.author.nextElementSibling.innerText =
-      dom.author.innerText =
-        closestStationToUser.files[0].author)
     &&
     (dom.userDistance.innerText =
       parseFloat(
         getDistance(userLocation, closestStationToUser.station_location) * DEGREE_TO_MILES_MULTIPLIER
       ).toFixed(2))
-    &&
-    (dom.labels.classList.remove('hidden') || true)
-    &&
-    (dom.user.classList.remove('hidden') || true)
     &&
     show(dom.map)
     &&
@@ -284,13 +314,27 @@ function restartUI(closestStationToUser, userLocation) {
       userLocation
     )
     &&
-    ((player.currentTime = 0) || true)
-    &&
-    (player.src = `audio/${closestStationToUser.files[0].file}`)
+    updateContentFromFile(closestStationToUser, appState.audio.fileIndex)
     &&
     !appState.audio.userPaused
     &&
-    (play(line) || true)
+    play(appState.trainLine)
+  );
+}
+
+function updateContentFromFile(closestStationToUser, fileIndex) {
+  return (
+    (dom.poem.nextElementSibling.innerText =
+      dom.poem.innerText =
+        closestStationToUser.files[fileIndex].title)
+    &&
+    (dom.author.nextElementSibling.innerText =
+      dom.author.innerText =
+        closestStationToUser.files[fileIndex].author)
+    &&
+    ((player.currentTime = 0) || true)
+    &&
+    (player.src = `audio/${closestStationToUser.files[fileIndex].file}`)
   );
 }
 
@@ -385,7 +429,7 @@ function getZoomLevel(distanceBetweenMarkers) {
 
 function getClosestStationTo(userLocation) {
   return (
-    data.lines[line].reduce(
+    data.lines[appState.trainLine].reduce(
       (closestStationToUser, station) =>
         (
           getDistance(userLocation, closestStationToUser.station_location)
