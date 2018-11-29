@@ -299,7 +299,7 @@ h2 {
   #instructions h2 {
     font-size:1.8rem;
     line-height:2;
-    margin-bottom:20px;
+    margin-bottom:5px;
   }
   #instructions p {
     font-size:1.2rem;
@@ -315,7 +315,7 @@ h2 {
   #instructions h2 {
     font-size:2rem;
     line-height:2.2;
-    margin-bottom:20px;
+    margin-bottom:0px;
   }
   #instructions p {
     font-size:1.2rem;
