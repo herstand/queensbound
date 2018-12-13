@@ -6,37 +6,37 @@ self.addEventListener('install', function(event) {
     caches.open(cacheName).then(function(cache) {
       return (
         cache.addAll([
-          './',
-          'index.html',
-          'favicon.png',
-          'css/style.css',
-          'images/loader.gif',
-          'images/logo.jpeg',
-          'images/person.png',
-          'images/poem.png',
-          'js/app.js',
-          'js/queensbound.js',
-          'css/thirdparty/openlayers.css',
-          'js/thirdparty/openlayers.js'
+          '/queensbound/',
+          '/queensbound/index.html',
+          '/queensbound/favicon.png',
+          '/queensbound/css/style.css',
+          '/queensbound/images/loader.gif',
+          '/queensbound/images/logo.jpeg',
+          '/queensbound/images/person.png',
+          '/queensbound/images/poem.png',
+          '/queensbound/js/app.js',
+          '/queensbound/js/queensbound.js',
+          '/queensbound/css/thirdparty/openlayers.css',
+          '/queensbound/js/thirdparty/openlayers.js'
         ])
         &&
         cache.addAll([
-          'audio/[ their spine ] by Joseph O. Legaspi.mp3',
-          'audio/7 to 46th Street_Bliss by KC Trommer.mp3',
-          'audio/A True Account of Talking to the 7 In Sunnyside by Paolo Javier.mp3',
-          'audio/All Possible Fates by Jared Harél.mp3',
-          'audio/Cornrows by Maria Lisella.mp3',
-          'audio/Hawthorne Court by Maria Terrone.mp3',
-          'audio/Here I Love You New York by Abeer Y. Hoque.mp3',
-          'audio/Industrial Design & Sunset by Safia Jama.mp3',
-          'audio/Kalpana Chawla Way by Malcolm Chang.mp3',
-          'audio/Liberty Ashes (Keep Rising) by Sherese Francis.mp3',
-          'audio/Matarose Tags G - Dragon on the 7 by Rosebud Ben-Oni.mp3',
-          'audio/Next Summer by Nicole Haroutunian.mp3',
-          'audio/Psalm of the Garden In the City by Catherine Fletcher.mp3',
-          'audio/Queens Communion by Vikas K. Menon.mp3',
-          'audio/The Odds of It by KC Trommer.mp3',
-          'audio/When They Come for Us on the 7 Train by Ananda Lima.mp3'
+          '/queensbound/audio/[ their spine ] by Joseph O. Legaspi.mp3',
+          '/queensbound/audio/7 to 46th Street_Bliss by KC Trommer.mp3',
+          '/queensbound/audio/A True Account of Talking to the 7 In Sunnyside by Paolo Javier.mp3',
+          '/queensbound/audio/All Possible Fates by Jared Harél.mp3',
+          '/queensbound/audio/Cornrows by Maria Lisella.mp3',
+          '/queensbound/audio/Hawthorne Court by Maria Terrone.mp3',
+          '/queensbound/audio/Here I Love You New York by Abeer Y. Hoque.mp3',
+          '/queensbound/audio/Industrial Design & Sunset by Safia Jama.mp3',
+          '/queensbound/audio/Kalpana Chawla Way by Malcolm Chang.mp3',
+          '/queensbound/audio/Liberty Ashes (Keep Rising) by Sherese Francis.mp3',
+          '/queensbound/audio/Matarose Tags G - Dragon on the 7 by Rosebud Ben-Oni.mp3',
+          '/queensbound/audio/Next Summer by Nicole Haroutunian.mp3',
+          '/queensbound/audio/Psalm of the Garden In the City by Catherine Fletcher.mp3',
+          '/queensbound/audio/Queens Communion by Vikas K. Menon.mp3',
+          '/queensbound/audio/The Odds of It by KC Trommer.mp3',
+          '/queensbound/audio/When They Come for Us on the 7 Train by Ananda Lima.mp3'
         ])
       );
     })
