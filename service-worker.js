@@ -62,7 +62,11 @@ self.addEventListener('activate', (event) =>
 
 self.addEventListener('fetch', async (e) =>
   e.respondWith(
-    caches.match(e.request).then(async (response) =>
+    caches.match(
+      e.request,
+      {cacheName, cacheName, ignoreVary:true}
+    )
+    .then(async (response) =>
       response
       ||
       fetch(e.request)
