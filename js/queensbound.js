@@ -20,6 +20,8 @@ const dom = {
   user : document.getElementById("user"),
   userDistance  : document.getElementById("userDistance"),
   map : document.getElementById("map"),
+  offlineMap : document.getElementById("offlineMap"),
+  reloadMap :  document.getElementById("reloadMap"),
   station : document.getElementById("closestStation"),
   poem : document.getElementById("poem"),
   author : document.getElementById("author"),
@@ -58,9 +60,42 @@ loadApp();
 
 function setupEvents() {
   return (
+    setupMapEvent()
+    &&
+    setupReloadMap()
+    &&
     setupMoveEventsForLabels()
     &&
     setupEventToPlayNext()
+  );
+}
+
+function setupMapEvent() {
+  return (
+    navigator.serviceWorker.addEventListener(
+      'message',
+      (event) =>
+        (event.data.msg === "MapFailedToLoad")
+        &&
+        showOfflineMap()
+    )
+    ||
+    true
+  );
+}
+
+function setupReloadMap() {
+  return (
+    dom.reloadMap.addEventListener(
+      'click',
+      () =>
+        constructMap(
+          appState.closestStationToUser.station_location,
+          appState.user.location
+        )
+    )
+    ||
+    true
   );
 }
 
@@ -290,6 +325,14 @@ function pause(trainLine) {
   ) || true;
 }
 
+function showOfflineMap() {
+  return (
+    hide(dom.map)
+    &&
+    show(dom.offlineMap)
+  );
+}
+
 function restartUI(closestStationToUser, userLocation) {
   return (
     hide(dom.loader)
@@ -306,8 +349,6 @@ function restartUI(closestStationToUser, userLocation) {
       parseFloat(
         getDistance(userLocation, closestStationToUser.station_location) * DEGREE_TO_MILES_MULTIPLIER
       ).toFixed(2))
-    &&
-    show(dom.map)
     &&
     constructMap(
       closestStationToUser.station_location,
@@ -340,6 +381,7 @@ function updateContentFromFile(closestStationToUser, fileIndex) {
 
 function constructMap(stationLocation, userLocation) {
   dom.map.innerHTML = "";
+  show(dom.map);
   const poemMarker = (
     new ol.Feature({
       geometry: new ol.geom.Point(

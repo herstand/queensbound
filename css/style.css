@@ -133,6 +133,33 @@ footer {
   border:1px solid black;
   background:black;
 }
+#offlineMap {
+  width:100%;
+  height:100%;
+  border:1px solid black;
+  background:#333;
+  text-align:center;
+  padding-top:15px;
+}
+#offlineMap h2 {
+  text-align:center;
+}
+#offlineMap #reloadMap {
+  display:inline-block;
+  margin-top:15px;
+  font-size:1.2em;
+  padding:10px 20px;
+  border:none;
+  border-radius:15px;
+  background:#009900;
+  color:white;
+}
+#offlineMap #reloadMap:hover {
+  cursor:pointer;
+}
+#offlineMap #reloadMap:active {
+  color:#007700;
+}
 h1, h2 {
   text-align:left;
   font-weight:bold;
