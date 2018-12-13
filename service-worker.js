@@ -7,8 +7,6 @@ self.addEventListener('install', function(event) {
       return (
         cache.addAll([
           '/queensbound',
-          'queensbound',
-          'queensbound/',
           '/queensbound/',
           '/queensbound/index.html',
           '/queensbound/favicon.png',
