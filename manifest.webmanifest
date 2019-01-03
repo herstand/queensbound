@@ -3,39 +3,54 @@
   "name": "Queensbound",
   "icons": [
     {
-      "src": "splash-640x1136.png",
+      "src": "/queensbound/splash-640x1136.png",
       "type": "image/png",
       "sizes": "640x1136"
     },
     {
-      "src": "splash-750x1136.png",
+      "src": "/queensbound/splash-750x1136.png",
       "type": "image/png",
       "sizes": "750x1136"
     },
     {
-      "src": "splash-1125x1334.png",
+      "src": "/queensbound/splash-1125x1334.png",
       "type": "image/png",
       "sizes": "1125x1334"
     },
     {
-      "src": "splash-1242x2208.png",
+      "src": "/queensbound/splash-1242x2208.png",
       "type": "image/png",
       "sizes": "1242x2208"
     },
     {
-      "src": "splash-1536x2048.png",
+      "src": "/queensbound/splash-1536x2048.png",
       "type": "image/png",
       "sizes": "1536x2048"
     },
     {
-      "src": "splash-1668x2224.png",
+      "src": "/queensbound/splash-1668x2224.png",
       "type": "image/png",
       "sizes": "1668x2224"
     },
     {
-      "src": "splash-2048x2732.png",
+      "src": "/queensbound/splash-2048x2732.png",
       "type": "image/png",
       "sizes": "2048x2732"
+    },
+    {
+      "src": "/queensbound/favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/queensbound/favicon@2x.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    },
+    {
+      "src": "/queensbound/favicon-144.png",
+      "type": "image/png",
+      "sizes": "144x144"
     }
   ],
   "start_url": "/queensbound/?source=pwa",
