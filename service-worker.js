@@ -1,5 +1,5 @@
 (() => {
-const cacheName = 'queensbound-v1';
+const cacheName = 'queensbound-v101';
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
